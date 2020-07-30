@@ -2,20 +2,12 @@ const TodoService = {
   getTodos(db) {
     return db
       .from('todo')
-      .select(
-        'todo.id',
-        'todo.title',
-        'todo.completed',
-      )
+      .select("*")
   },
   getTodoById(db, todo_id) {
     return db
       .from('todo')
-      .select(
-        'todo.id',
-        'todo.title',
-        'todo.completed',
-      )
+      .select("*")
       .where('todo.id', todo_id)
       .first()
   },

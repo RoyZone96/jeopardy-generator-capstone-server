@@ -1,26 +1,14 @@
 const BoardsService = {
     getBoards(db) {
         return db
-            .from('users')
-            .select(
-                'boards.id',
-                'boards.user_id',
-                'boards.board_title',
-                'boards.date_created',
-                'boards.date_updated'
-            )
+            .from('boards')
+            .select("*")
     },
     getBoardsById(db, boards_id ){
         return db
-            .from('users')
-            .select(
-                'boards.id',
-                'boards.user_id',
-                'boards.board_title',
-                'boards.date_created',
-                'boards.date_updated'
-            )
-            .where('users.id', users_id)
+            .from('boards')
+            .select("*")
+            .where('boards.id', boards_id)
             .first()
     },
     insertBoards(db, newBoards) {

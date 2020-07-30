@@ -2,25 +2,13 @@ const QuestionsService = {
     getQuestions(db) {
         return db
             .from('questions')
-            .select(
-                'question.id',
-                'boards.user_id',
-                'boards.board_title',
-                'boards.date_created',
-                'boards.date_updated'
-            )
+            .select("*")
     },
     getQuestionsById(db, questions_id ){
         return db
             .from('questions')
-            .select(
-                'boards.id',
-                'boards.user_id',
-                'boards.board_title',
-                'boards.date_created',
-                'boards.date_updated'
-            )
-            .where('users.id', users_id)
+            .select("*")
+            .where('questions.id', questions_id)
             .first()
     },
     insertQuestions(db, newQuestions) {
@@ -38,7 +26,7 @@ const QuestionsService = {
             .delete()
     },
     updateQuestions(db, questions_id, newQuestions) {
-        return db('boards')
+        return db('questions')
             .where({ id: questions_id })
             .update(newQuestions, returning = true)
             .returning('*')

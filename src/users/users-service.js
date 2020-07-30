@@ -2,24 +2,12 @@ const UsersService = {
     getUsers(db) {
         return db
             .from('users')
-            .select(
-                'users.id',
-                'users.email',
-                'users.username',
-                'users.password',
-                'users.log_state'
-            )
+            .select("*")
     },
     getUsersById(db, users_id ){
         return db
             .from('users')
-            .select(
-                'users.id',
-                'users.email',
-                'users.username',
-                'users.password',
-                'users.log_state'
-            )
+            .select("*")
             .where('users.id', users_id)
             .first()
     },
@@ -38,7 +26,7 @@ const UsersService = {
             .delete()
     },
     updateUsers(db, users_id, newUsers) {
-        return db('todo')
+        return db('users')
             .where({ id: users_id })
             .update(newUsers, returning = true)
             .returning('*')

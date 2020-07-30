@@ -1,82 +1,87 @@
 const path = require('path')
 const express = require('express')
 const xss = require('xss')
-const TodoService = require('./todo-service')
+const UsersService = require('./users-service')
 
 const usersRouter = express.Router()
 const jsonParser = express.json()
 
-const serializeTodo = users => ({
-  id: user.id,
-  title: xss(todo.title),
-  completed: todo.completed
+const serializeUser = users => ({
+  id: users.id,
+  title: xss(users.title),
+  completed: users.completed
 })
 
-todoRouter
+usersRouter
   .route('/')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
-    TodoService.getTodos(knexInstance)
-      .then(todos => {
-        res.json(todos.map(serializeTodo))
+    UsersService.getUsers(knexInstance)
+      .then(users => {
+        res.json(users.map(serializeUser))
       })
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { title, completed = false } = req.body
-    const newTodo = { title }
+    const {  email,
+      username,
+      password,
+      log_state} = req.body
+    const newUser = {  email,
+      username,
+      password,
+      log_state}
 
-    for (const [key, value] of Object.entries(newTodo))
+    for (const [key, value] of Object.entries(newUser))
       if (value == null)
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
         })
 
-    newTodo.completed = completed;  
 
-    TodoService.insertTodo(
+    UsersService.insertUsers(
       req.app.get('db'),
-      newTodo
+      newUser
     )
-      .then(todo => {
+      .then(user => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${todo.id}`))
-          .json(serializeTodo(todo))
+          .location(path.posix.join(req.originalUrl, `/${user.id}`))
+          .json(serializeUser(user))
       })
       .catch(next)
   })
 
-todoRouter
-  .route('/:todo_id')
+usersRouter
+  .route('/')
   .all((req, res, next) => {
-    if(isNaN(parseInt(req.params.todo_id))) {
+    if(isNaN(parseInt(req.params.user_id))) {
       return res.status(404).json({
         error: { message: `Invalid id` }
       })
     }
-    TodoService.getTodoById(
+    UsersService.getUserById(
       req.app.get('db'),
-      req.params.todo_id
+      req.params.user_id
     )
-      .then(todo => {
-        if (!todo) {
+      .then(user => {
+        if (!user) {
           return res.status(404).json({
-            error: { message: `Todo doesn't exist` }
+            error: { message: `User doesn't exist` }
           })
         }
-        res.todo = todo
+        res.user = user
         next()
       })
       .catch(next)
   })
   .get((req, res, next) => {
-    res.json(serializeTodo(res.todo))
+    res.json(serializeUser(res.user))
   })
   .delete((req, res, next) => {
-    TodoService.deleteTodo(
+    UsersService.deleteUser(
       req.app.get('db'),
-      req.params.todo_id
+      req.params.user_id
     )
       .then(numRowsAffected => {
         res.status(204).end()
@@ -85,9 +90,9 @@ todoRouter
   })
   .patch(jsonParser, (req, res, next) => {
     const { title, completed } = req.body
-    const todoToUpdate = { title, completed }
+    const userToUpdate = { title, completed }
 
-    const numberOfValues = Object.values(todoToUpdate).filter(Boolean).length
+    const numberOfValues = Object.values(userToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
@@ -95,15 +100,15 @@ todoRouter
         }
       })
 
-    TodoService.updateTodo(
+    UsersService.updateUser(
       req.app.get('db'),
-      req.params.todo_id,
-      todoToUpdate
+      req.params.user_id,
+      userToUpdate
     )
-      .then(updatedTodo => {
-        res.status(200).json(serializeTodo(updatedTodo[0]))
+      .then(updatedUser => {
+        res.status(200).json(serializeUser(updatedUser[0]))
       })
       .catch(next)
   })
 
-module.exports = todoRouter
+module.exports = usersRouter

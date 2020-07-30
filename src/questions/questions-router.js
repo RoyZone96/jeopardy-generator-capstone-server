@@ -1,82 +1,90 @@
 const path = require('path')
 const express = require('express')
 const xss = require('xss')
-const TodoService = require('./todo-service')
+const QuestionsService = require('./questions-service')
 
-const todoRouter = express.Router()
+const questionsRouter = express.Router()
 const jsonParser = express.json()
 
-const serializeTodo = todo => ({
-  id: todo.id,
-  title: xss(todo.title),
-  completed: todo.completed
+const serializeQuestions = questions => ({
+  id: questions.id,
+  title: xss(questions.title),
+  completed: questions.completed
 })
 
-todoRouter
+questionsRouter
   .route('/')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
-    TodoService.getTodos(knexInstance)
-      .then(todos => {
-        res.json(todos.map(serializeTodo))
+    QuestionsService.getQuestions(knexInstance)
+      .then(questionss => {
+        res.json(questionss.map(serializeQuestions))
       })
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { title, completed = false } = req.body
-    const newTodo = { title }
+    const {board_id,
+    question_text,
+    question_answer,
+    question_points,
+    question_category
+    } = req.body
+    const newquestions = {board_id,
+      question_text,
+      question_answer,
+      question_points,
+      question_category
+      }
 
-    for (const [key, value] of Object.entries(newTodo))
+    for (const [key, value] of Object.entries(newquestions))
       if (value == null)
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
-        })
+        })  
 
-    newTodo.completed = completed;  
-
-    TodoService.insertTodo(
+    QuestionsService.insertQuestions(
       req.app.get('db'),
-      newTodo
+      newquestions
     )
-      .then(todo => {
+      .then(questions => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${todo.id}`))
-          .json(serializeTodo(todo))
+          .location(path.posix.join(req.originalUrl, `/question/${questions.id}`))
+          .json(serializeQuestions(questions))
       })
       .catch(next)
   })
 
-todoRouter
-  .route('/:todo_id')
+questionsRouter
+  .route('/question/:questions_id')
   .all((req, res, next) => {
-    if(isNaN(parseInt(req.params.todo_id))) {
+    if(isNaN(parseInt(req.params.questions_id))) {
       return res.status(404).json({
         error: { message: `Invalid id` }
       })
     }
-    TodoService.getTodoById(
+    QuestionsService.getQuestionsById(
       req.app.get('db'),
-      req.params.todo_id
+      req.params.questions_id
     )
-      .then(todo => {
-        if (!todo) {
+      .then(questions => {
+        if (!questions) {
           return res.status(404).json({
-            error: { message: `Todo doesn't exist` }
+            error: { message: `questions doesn't exist` }
           })
         }
-        res.todo = todo
+        res.questions = questions
         next()
       })
       .catch(next)
   })
   .get((req, res, next) => {
-    res.json(serializeTodo(res.todo))
+    res.json(serializeQuestions(res.questions))
   })
   .delete((req, res, next) => {
-    TodoService.deleteTodo(
+    QuestionsService.deleteQuestions(
       req.app.get('db'),
-      req.params.todo_id
+      req.params.questions_id
     )
       .then(numRowsAffected => {
         res.status(204).end()
@@ -85,9 +93,9 @@ todoRouter
   })
   .patch(jsonParser, (req, res, next) => {
     const { title, completed } = req.body
-    const todoToUpdate = { title, completed }
+    const questionsToUpdate = { title, completed }
 
-    const numberOfValues = Object.values(todoToUpdate).filter(Boolean).length
+    const numberOfValues = Object.values(questionsToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
@@ -95,15 +103,15 @@ todoRouter
         }
       })
 
-    TodoService.updateTodo(
+    QuestionsService.updateQuestions(
       req.app.get('db'),
-      req.params.todo_id,
-      todoToUpdate
+      req.params.questions_id,
+      questionsToUpdate
     )
-      .then(updatedTodo => {
-        res.status(200).json(serializeTodo(updatedTodo[0]))
+      .then(updatedquestions => {
+        res.status(200).json(serializeQuestions(updatedquestions[0]))
       })
       .catch(next)
   })
 
-module.exports = todoRouter
+module.exports = questionsRouter
