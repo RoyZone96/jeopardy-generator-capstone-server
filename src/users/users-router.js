@@ -25,14 +25,16 @@ usersRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const {  email,
+    const { email,
       username,
       password,
-      log_state} = req.body
-    const newUser = {  email,
+      log_state } = req.body
+    const newUser = {
+      email,
       username,
       password,
-      log_state}
+      log_state
+    }
 
     for (const [key, value] of Object.entries(newUser))
       if (value == null)
@@ -53,11 +55,21 @@ usersRouter
       })
       .catch(next)
   })
+  .delete((req, res, next) => {
+    UsersService.deleteUsers(
+      req.app.get('db'),
+      req.params.user_id
+    )
+      .then(numRowsAffected => {
+        res.status(204).end()
+      })
+      .catch(next)
+  })
 
 usersRouter
-  .route('/id')
+  .route('/')
   .all((req, res, next) => {
-    if(isNaN(parseInt(req.params.user_id))) {
+    if (isNaN(parseInt(req.params.user_id))) {
       return res.status(404).json({
         error: { message: `Invalid id` }
       })
@@ -81,7 +93,7 @@ usersRouter
     res.json(serializeUser(res.user))
   })
   .delete((req, res, next) => {
-    UsersService.deleteUser(
+    UsersService.deleteUsers(
       req.app.get('db'),
       req.params.user_id
     )
