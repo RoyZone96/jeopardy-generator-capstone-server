@@ -8,7 +8,11 @@ const jsonParser = express.json()
 
 const serializeBoards = boards => ({
   id: boards.id,
-  title: xss(boards.title),
+  user_id: boards.user_id,
+  board_title: xss(boards.title),
+  times_played: boards.times_played,
+  date_created: boards.date_created,
+  date_updated: boards.date_updated
 })
 
 boardsRouter
@@ -83,7 +87,7 @@ boardsRouter
   .delete((req, res, next) => {
     BoardsService.deleteboards(
       req.app.get('db'),
-      req.params.boards_id
+      req.params.id
     )
       .then(numRowsAffected => {
         res.status(204).end()
@@ -91,8 +95,16 @@ boardsRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { title, completed } = req.body
-    const boardsToUpdate = { title, completed }
+    const { user_id,
+      board_title,
+      times_played,
+      date_created,
+      date_updated  } = req.body
+    const boardsToUpdate = { user_id,
+      board_title,
+      times_played,
+      date_created,
+      date_updated }
 
     const numberOfValues = Object.values(boardsToUpdate).filter(Boolean).length
     if (numberOfValues === 0)

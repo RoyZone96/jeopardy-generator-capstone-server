@@ -1,9 +1,9 @@
 const knex = require('knex')
 const app = require('../src/app');
 
-describe('Todo API:', function () {
+describe('Jeopardy API:', function () {
   let db;
-  let todos = [
+  let users = [
     { "title": "Buy Milk",   "completed": false },
     { "title": "Do Laundry",  "completed": true },
     { "title": "Vacuum", "completed": false },
@@ -14,30 +14,30 @@ describe('Todo API:', function () {
   before('make knex instance', () => {  
     db = knex({
       client: 'pg',
-      connection: process.env.TEST_DB_URL,
+      connection: process.env.TEST_DATABASE_URL,
     })
     app.set('db', db)
   });
   
-  before('cleanup', () => db.raw('TRUNCATE TABLE todo RESTART IDENTITY;'));
+  before('cleanup', () => db.raw('TRUNCATE TABLE users RESTART IDENTITY;'));
 
-  afterEach('cleanup', () => db.raw('TRUNCATE TABLE todo RESTART IDENTITY;')); 
+  afterEach('cleanup', () => db.raw('TRUNCATE TABLE users RESTART IDENTITY;')); 
 
   after('disconnect from the database', () => db.destroy()); 
 
-  describe('GET /v1/todos', () => {
+  describe('GET /api/users', () => {
 
-    beforeEach('insert some todos', () => {
-      return db('todo').insert(todos);
+    beforeEach('insert some userss', () => {
+      return db('users').insert(userss);
     })
 
-    it('should respond to GET `/v1/todos` with an array of todos and status 200', function () {
+    it('should respond to GET `/api/userss` with an array of userss and status 200', function () {
       return supertest(app)
-        .get('/v1/todos')
+        .get('/api/userss')
         .expect(200)
         .expect(res => {
           expect(res.body).to.be.a('array');
-          expect(res.body).to.have.length(todos.length);
+          expect(res.body).to.have.length(userss.length);
           res.body.forEach((item) => {
             expect(item).to.be.a('object');
             expect(item).to.include.keys('id', 'title', 'completed');
@@ -48,20 +48,20 @@ describe('Todo API:', function () {
   });
 
   
-  describe('GET /v1/todos/:id', () => {
+  describe('GET /api/userss/:id', () => {
 
-    beforeEach('insert some todos', () => {
-      return db('todo').insert(todos);
+    beforeEach('insert some userss', () => {
+      return db('users').insert(userss);
     })
 
-    it('should return correct todo when given an id', () => {
+    it('should return correct users when given an id', () => {
       let doc;
-      return db('todo')
+      return db('users')
         .first()
         .then(_doc => {
           doc = _doc
           return supertest(app)
-            .get(`/v1/todos/${doc.id}`)
+            .get(`/api/userss/${doc.id}`)
             .expect(200);
         })
         .then(res => {
@@ -75,22 +75,22 @@ describe('Todo API:', function () {
 
     it('should respond with a 404 when given an invalid id', () => {
       return supertest(app)
-        .get('/v1/todos/aaaaaaaaaaaa')
+        .get('/api/userss/aaaaaaaaaaaa')
         .expect(404);
     });
     
   });
 
   
-  describe('POST /v1/todos', function () {
+  describe('POST /api/userss', function () {
 
-    it('should create and return a new todo when provided valid data', function () {
+    it('should create and return a new users when provided valid data', function () {
       const newItem = {
         'title': 'Do Dishes'
       };
 
       return supertest(app)
-        .post('/v1/todos')
+        .post('/api/userss')
         .send(newItem)
         .expect(201)
         .expect(res => {
@@ -98,7 +98,7 @@ describe('Todo API:', function () {
           expect(res.body).to.include.keys('id', 'title', 'completed');
           expect(res.body.title).to.equal(newItem.title);
           expect(res.body.completed).to.be.false;
-          expect(res.headers.location).to.equal(`/v1/todos/${res.body.id}`)
+          expect(res.headers.location).to.equal(`/api/userss/${res.body.id}`)
         });
     });
 
@@ -107,7 +107,7 @@ describe('Todo API:', function () {
         foobar: 'broken item'
       };
       return supertest(app)
-        .post('/v1/todos')
+        .post('/api/userss')
         .send(badItem)
         .expect(400);
     });
@@ -115,10 +115,10 @@ describe('Todo API:', function () {
   });
 
   
-  describe('PATCH /v1/todos/:id', () => {
+  describe('PATCH /api/userss/:id', () => {
 
-    beforeEach('insert some todos', () => {
-      return db('todo').insert(todos);
+    beforeEach('insert some users', () => {
+      return db('users').insert(userss);
     })
 
     it('should update item when given valid data and an id', function () {
@@ -127,12 +127,12 @@ describe('Todo API:', function () {
       };
       
       let doc;
-      return db('todo')
+      return db('users')
         .first()
         .then(_doc => {
           doc = _doc
           return supertest(app)
-            .patch(`/v1/todos/${doc.id}`)
+            .patch(`/api/userss/${doc.id}`)
             .send(item)
             .expect(200);
         })
@@ -149,11 +149,11 @@ describe('Todo API:', function () {
         foobar: 'broken item'
       };
       
-      return db('todo')
+      return db('users')
         .first()
         .then(doc => {
           return supertest(app)
-            .patch(`/v1/todos/${doc.id}`)
+            .patch(`/api/userss/${doc.id}`)
             .send(badItem)
             .expect(400);
         })
@@ -164,25 +164,25 @@ describe('Todo API:', function () {
         'title': 'Buy New Dishes'
       };
       return supertest(app)
-        .patch('/v1/todos/aaaaaaaaaaaaaaaaaaaaaaaa')
+        .patch('/api/userss/aaaaaaaaaaaaaaaaaaaaaaaa')
         .send(item)
         .expect(404);
     });
 
   });
 
-  describe('DELETE /v1/todos/:id', () => {
+  describe('DELETE /api/userss/:id', () => {
 
-    beforeEach('insert some todos', () => {
-      return db('todo').insert(todos);
+    beforeEach('insert some userss', () => {
+      return db('users').insert(userss);
     })
 
     it('should delete an item by id', () => {
-      return db('todo')
+      return db('users')
         .first()
         .then(doc => {
           return supertest(app)
-            .delete(`/v1/todos/${doc.id}`)
+            .delete(`/api/userss/${doc.id}`)
             .expect(204);
         })
     });
@@ -190,7 +190,7 @@ describe('Todo API:', function () {
     it('should respond with a 404 for an invalid id', function () {
       
       return supertest(app)
-        .delete('/v1/todos/aaaaaaaaaaaaaaaaaaaaaaaa')
+        .delete('/api/userss/aaaaaaaaaaaaaaaaaaaaaaaa')
         .expect(404);
     });
 

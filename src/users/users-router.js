@@ -15,7 +15,7 @@ const serializeUser = users => ({
 })
 
 usersRouter
-  .route('/')
+  .route('/:user_id')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     UsersService.getUsers(knexInstance)
@@ -55,7 +55,7 @@ usersRouter
   })
 
 usersRouter
-  .route('/')
+  .route('/id')
   .all((req, res, next) => {
     if(isNaN(parseInt(req.params.user_id))) {
       return res.status(404).json({

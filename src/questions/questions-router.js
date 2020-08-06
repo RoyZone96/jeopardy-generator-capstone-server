@@ -8,8 +8,11 @@ const jsonParser = express.json()
 
 const serializeQuestions = questions => ({
   id: questions.id,
-  title: xss(questions.title),
-  completed: questions.completed
+  board_id: questions.board_id,
+  question_text: questions.question_text,
+  question_answer: questions.question_answer,
+  question_points: questions.question_points,
+  question_category: questions.question_category
 })
 
 questionsRouter
@@ -23,24 +26,25 @@ questionsRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const {board_id,
-    question_text,
-    question_answer,
-    question_points,
-    question_category
-    } = req.body
-    const newquestions = {board_id,
+    const { board_id,
       question_text,
       question_answer,
       question_points,
       question_category
-      }
+    } = req.body
+    const newquestions = {
+      board_id,
+      question_text,
+      question_answer,
+      question_points,
+      question_category
+    }
 
     for (const [key, value] of Object.entries(newquestions))
       if (value == null)
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
-        })  
+        })
 
     QuestionsService.insertQuestions(
       req.app.get('db'),
@@ -58,7 +62,7 @@ questionsRouter
 questionsRouter
   .route('/question/:questions_id')
   .all((req, res, next) => {
-    if(isNaN(parseInt(req.params.questions_id))) {
+    if (isNaN(parseInt(req.params.questions_id))) {
       return res.status(404).json({
         error: { message: `Invalid id` }
       })
