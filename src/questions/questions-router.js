@@ -16,7 +16,7 @@ const serializeQuestions = questions => ({
 })
 
 questionsRouter
-  .route('/')
+  .route('/:questions_id')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     QuestionsService.getQuestions(knexInstance)
@@ -58,9 +58,42 @@ questionsRouter
       })
       .catch(next)
   })
+  .delete((req, res, next) => {
+    QuestionsService.deleteQuestions(
+      req.app.get('db'),
+      req.params.questions_id
+    )
+      .then(numRowsAffected => {
+        console.log(numRowsAffected)
+        res.status(204).end()
+      })
+      .catch(next)
+  })
+  .patch(jsonParser, (req, res, next) => {
+    const { title, completed } = req.body
+    const questionsToUpdate = { title, completed }
+
+    const numberOfValues = Object.values(questionsToUpdate).filter(Boolean).length
+    if (numberOfValues === 0)
+      return res.status(400).json({
+        error: {
+          message: `Request body must content either 'title' or 'completed'`
+        }
+      })
+
+    QuestionsService.updateQuestions(
+      req.app.get('db'),
+      req.params.questions_id,
+      questionsToUpdate
+    )
+      .then(updatedquestions => {
+        res.status(200).json(serializeQuestions(updatedquestions[0]))
+      })
+      .catch(next)
+  })
 
 questionsRouter
-  .route('/question/:questions_id')
+  .route('/:questions_id')
   .all((req, res, next) => {
     if (isNaN(parseInt(req.params.questions_id))) {
       return res.status(404).json({

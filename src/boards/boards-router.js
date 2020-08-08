@@ -16,7 +16,7 @@ const serializeBoards = boards => ({
 })
 
 boardsRouter
-  .route('/')
+  .route('/:board_id')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     BoardsService.getBoards(knexInstance)
@@ -58,18 +58,50 @@ boardsRouter
       .catch(next)
   })
   .delete((req, res, next) => {
+    console.log(req.params)
     BoardsService.deleteBoards(
       req.app.get('db'),
-      req.params.id
+      req.params.board_id
     )
       .then(numRowsAffected => {
+        console.log(numRowsAffected)
         res.status(204).end()
+      })
+      .catch(err=>console.log(err))
+  })
+  .patch(jsonParser, (req, res, next) => {
+    const { user_id,
+      board_title,
+      times_played,
+      date_created,
+      date_updated  } = req.body
+    const boardsToUpdate = { user_id,
+      board_title,
+      times_played,
+      date_created,
+      date_updated }
+
+    const numberOfValues = Object.values(boardsToUpdate).filter(Boolean).length
+    if (numberOfValues === 0)
+      return res.status(400).json({
+        error: {
+          message: `Request body must content either 'title' or 'completed'`
+        }
+      })
+
+    BoardsService.updateBoards(
+      req.app.get('db'),
+      req.params.boards_id,
+      boardsToUpdate
+    )
+      .then(updatedboards => {
+        res.status(200).json(serializeBoards(updatedboards[0]))
       })
       .catch(next)
   })
 
 boardsRouter
-  .route('/:boards_id')
+  .route('/')
   .all((req, res, next) => {
     if(isNaN(parseInt(req.params.boards_id))) {
       return res.status(404).json({

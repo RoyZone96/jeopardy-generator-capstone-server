@@ -65,6 +65,34 @@ usersRouter
       })
       .catch(next)
   })
+  .patch(jsonParser, (req, res, next) => {
+    const { email,
+      username,
+      password,
+      log_state} = req.body
+    const userToUpdate = { email,
+      username,
+      password,
+      log_state }
+
+    const numberOfValues = Object.values(userToUpdate).filter(Boolean).length
+    if (numberOfValues === 0)
+      return res.status(400).json({
+        error: {
+          message: `Request body must content either 'title' or 'completed'`
+        }
+      })
+
+    UsersService.updateUsers(
+      req.app.get('db'),
+      req.params.user_id,
+      userToUpdate
+    )
+      .then(updatedUser => {
+        res.status(200).json(serializeUser(updatedUser[0]))
+      })
+      .catch(next)
+  })
 
 usersRouter
   .route('/')

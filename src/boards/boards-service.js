@@ -25,7 +25,7 @@ const BoardsService = {
             .where({ 'id': boards_id })
             .delete()
     },
-    updateBoads(db, boards_id, newBoards) {
+    updateBoards(db, boards_id, newBoards) {
         return db('boards')
             .where({ id: boards_id })
             .update(newBoards, returning = true)
