@@ -62,7 +62,7 @@ supportsRouter
         console.log(req.params)
         SupportsService.deleteSupports(
             req.app.get('db'),
-            req.params.board_id
+            req.params.supports_id
         )
             .then(numRowsAffected => {
                 console.log(numRowsAffected)
@@ -103,8 +103,8 @@ supportsRouter
             req.params.supports_id,
             supportsToUpdate
         )
-            .then(updatedsupports => {
-                res.status(200).json(serializeSupports(updatedsupports[0]))
+            .then(updatedSupports => {
+                res.status(200).json(serializeSupports(updatedSupports[0]))
             })
             .catch(err => console.log(err))
     })
