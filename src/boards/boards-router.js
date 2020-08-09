@@ -16,7 +16,7 @@ const serializeBoards = boards => ({
 })
 
 boardsRouter
-  .route('/:board_id')
+  .route('/:boards_id')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     BoardsService.getBoards(knexInstance)
@@ -88,7 +88,12 @@ boardsRouter
           message: `Request body must content either 'title' or 'completed'`
         }
       })
-
+    console.log({
+      user_id,
+      board_title,
+      times_played,
+      date_created,
+      date_updated})
     BoardsService.updateBoards(
       req.app.get('db'),
       req.params.boards_id,
@@ -97,7 +102,7 @@ boardsRouter
       .then(updatedboards => {
         res.status(200).json(serializeBoards(updatedboards[0]))
       })
-      .catch(next)
+      .catch(err => console.log(err))
   })
 
 boardsRouter

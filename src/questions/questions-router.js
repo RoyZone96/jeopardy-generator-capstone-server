@@ -70,8 +70,16 @@ questionsRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { title, completed } = req.body
-    const questionsToUpdate = { title, completed }
+    const { board_id,
+      question_text,
+      question_answer,
+      question_points,
+      question_category } = req.body
+    const questionsToUpdate = { board_id,
+      question_text,
+      question_answer,
+      question_points,
+      question_category }
 
     const numberOfValues = Object.values(questionsToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
@@ -86,8 +94,8 @@ questionsRouter
       req.params.questions_id,
       questionsToUpdate
     )
-      .then(updatedquestions => {
-        res.status(200).json(serializeQuestions(updatedquestions[0]))
+      .then(updatedQuestions => {
+        res.status(200).json(serializeQuestions(updatedQuestions[0]))
       })
       .catch(next)
   })
