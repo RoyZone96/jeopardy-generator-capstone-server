@@ -9,8 +9,8 @@ const jsonParser = express.json()
 const serializeQuestions = questions => ({
   id: questions.id,
   board_id: questions.board_id,
-  question_text: questions.question_text,
-  question_answer: questions.question_answer,
+  question_text: xss(questions.question_text),
+  question_answer: xss(questions.question_answer),
   question_points: questions.question_points,
   question_category: questions.question_category
 })
