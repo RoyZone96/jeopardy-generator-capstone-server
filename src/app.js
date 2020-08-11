@@ -9,6 +9,7 @@ const usersRouter = require('./users/users-router')
 const boardsRouter = require('./boards/boards-router')
 const questionsRouter = require('./questions/questions-router')
 const supportsRouter = require('./supports/supports-router')
+const path = require(path)
 
 const app = express()
 
@@ -22,7 +23,7 @@ app.use(morgan(morganOption, {
 app.use(cors())
 app.use(helmet())
 
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/api/supports', supportsRouter)
 app.use('/api/users', usersRouter)
