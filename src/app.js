@@ -10,7 +10,9 @@ const usersRouter = require('./users/users-router')
 const boardsRouter = require('./boards/boards-router')
 const questionsRouter = require('./questions/questions-router')
 const supportsRouter = require('./supports/supports-router')
+const authRouter = require('./auth/auth-router')
 const path = require('path')
+
 
 const app = express()
 
@@ -34,6 +36,7 @@ app.use('/api/supports', supportsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/boards', boardsRouter)
 app.use('/api/questions', questionsRouter)
+app.use('/api/auth', authRouter)
 app.use(errorHandler)
 
 module.exports = app
