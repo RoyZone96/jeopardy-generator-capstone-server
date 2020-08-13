@@ -15,7 +15,7 @@ const serializeUser = users => ({
 })
 
 usersRouter
-  .route('/:user_id')
+  .route('/')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     UsersService.getUsers(knexInstance)
@@ -27,13 +27,12 @@ usersRouter
   .post(jsonParser, (req, res, next) => {
     const { email,
       username,
-      password,
-      log_state } = req.body
+      password
+     } = req.body
     const newUser = {
       email,
       username,
-      password,
-      log_state
+      password
     }
 
     for (const [key, value] of Object.entries(newUser))
@@ -69,11 +68,11 @@ usersRouter
     const { email,
       username,
       password,
-      log_state} = req.body
+      } = req.body
     const userToUpdate = { email,
       username,
       password,
-      log_state }
+     }
 
     const numberOfValues = Object.values(userToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
@@ -95,7 +94,7 @@ usersRouter
   })
 
 usersRouter
-  .route('/')
+  .route('/:user_id')
   .all((req, res, next) => {
     if (isNaN(parseInt(req.params.user_id))) {
       return res.status(404).json({
