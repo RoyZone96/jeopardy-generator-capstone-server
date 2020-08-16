@@ -31,9 +31,9 @@ describe('Jeopardy API:', function () {
       return db('users').insert(userss);
     })
 
-    it('should respond to GET `/api/userss` with an array of userss and status 200', function () {
+    it('should respond to GET `/api/users` with an array of userss and status 200', function () {
       return supertest(app)
-        .get('/api/userss')
+        .get('/api/users')
         .expect(200)
         .expect(res => {
           expect(res.body).to.be.a('array');
@@ -48,7 +48,7 @@ describe('Jeopardy API:', function () {
   });
 
   
-  describe('GET /api/userss/:id', () => {
+  describe('GET /api/users/:id', () => {
 
     beforeEach('insert some userss', () => {
       return db('users').insert(userss);
@@ -61,7 +61,7 @@ describe('Jeopardy API:', function () {
         .then(_doc => {
           doc = _doc
           return supertest(app)
-            .get(`/api/userss/${doc.id}`)
+            .get(`/api/users/${doc.id}`)
             .expect(200);
         })
         .then(res => {
@@ -75,14 +75,14 @@ describe('Jeopardy API:', function () {
 
     it('should respond with a 404 when given an invalid id', () => {
       return supertest(app)
-        .get('/api/userss/aaaaaaaaaaaa')
+        .get('/api/users/aaaaaaaaaaaa')
         .expect(404);
     });
     
   });
 
   
-  describe('POST /api/userss', function () {
+  describe('POST /api/users', function () {
 
     it('should create and return a new users when provided valid data', function () {
       const newItem = {
@@ -90,7 +90,7 @@ describe('Jeopardy API:', function () {
       };
 
       return supertest(app)
-        .post('/api/userss')
+        .post('/api/users')
         .send(newItem)
         .expect(201)
         .expect(res => {
@@ -98,7 +98,7 @@ describe('Jeopardy API:', function () {
           expect(res.body).to.include.keys('id', 'title', 'completed');
           expect(res.body.title).to.equal(newItem.title);
           expect(res.body.completed).to.be.false;
-          expect(res.headers.location).to.equal(`/api/userss/${res.body.id}`)
+          expect(res.headers.location).to.equal(`/api/users/${res.body.id}`)
         });
     });
 
@@ -107,7 +107,7 @@ describe('Jeopardy API:', function () {
         foobar: 'broken item'
       };
       return supertest(app)
-        .post('/api/userss')
+        .post('/api/users')
         .send(badItem)
         .expect(400);
     });
@@ -115,7 +115,7 @@ describe('Jeopardy API:', function () {
   });
 
   
-  describe('PATCH /api/userss/:id', () => {
+  describe('PATCH /api/users/:id', () => {
 
     beforeEach('insert some users', () => {
       return db('users').insert(userss);
@@ -132,7 +132,7 @@ describe('Jeopardy API:', function () {
         .then(_doc => {
           doc = _doc
           return supertest(app)
-            .patch(`/api/userss/${doc.id}`)
+            .patch(`/api/users/${doc.id}`)
             .send(item)
             .expect(200);
         })
@@ -153,7 +153,7 @@ describe('Jeopardy API:', function () {
         .first()
         .then(doc => {
           return supertest(app)
-            .patch(`/api/userss/${doc.id}`)
+            .patch(`/api/users/${doc.id}`)
             .send(badItem)
             .expect(400);
         })
@@ -164,14 +164,14 @@ describe('Jeopardy API:', function () {
         'title': 'Buy New Dishes'
       };
       return supertest(app)
-        .patch('/api/userss/aaaaaaaaaaaaaaaaaaaaaaaa')
+        .patch('/api/users/aaaaaaaaaaaaaaaaaaaaaaaa')
         .send(item)
         .expect(404);
     });
 
   });
 
-  describe('DELETE /api/userss/:id', () => {
+  describe('DELETE /api/users/:id', () => {
 
     beforeEach('insert some userss', () => {
       return db('users').insert(userss);
@@ -182,7 +182,7 @@ describe('Jeopardy API:', function () {
         .first()
         .then(doc => {
           return supertest(app)
-            .delete(`/api/userss/${doc.id}`)
+            .delete(`/api/users/${doc.id}`)
             .expect(204);
         })
     });
@@ -190,7 +190,7 @@ describe('Jeopardy API:', function () {
     it('should respond with a 404 for an invalid id', function () {
       
       return supertest(app)
-        .delete('/api/userss/aaaaaaaaaaaaaaaaaaaaaaaa')
+        .delete('/api/users/aaaaaaaaaaaaaaaaaaaaaaaa')
         .expect(404);
     });
 
