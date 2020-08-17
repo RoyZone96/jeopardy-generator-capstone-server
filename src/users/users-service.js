@@ -1,51 +1,47 @@
-const UsersService = {
-    getUsers(db) {
-        return db
-            .from('users')
-            .select("*")
-    },
-    getUsersById(db, users_id ){
-        return db
-            .from('users')
-            .select("*")
-            .where('users.id', users_id)
-            .first()
-    },
-    postUser(newUsers) {
-         return fetch(`${config.API_ENDPOINT}/users`, {
-           method: 'POST',
-           headers: {
-             'content-type': 'application/json',
-           },
-           body: JSON.stringify(),
-         })
-           .then(res =>
-             (!res.ok)
-               ? res.json().then(e => Promise.reject(e))
-               : res.json()
-           )
-       },
-    insertUsers(db, newUsers) {
-        return db
-            .insert(newUsers)
-            .into('users')
-            .returning('*')
-            .then(rows => {
-                return rows[0]
-            })
-    },
-    deleteUsers(db, users_id) {
-        return db('users')
-            .where({ 'id': users_id })
-            .delete()
-    },
-    updateUsers(db, users_id, newUsers) {
-        return db('users')
-            .where({ id: users_id })
-            .update(newUsers, returning = true)
-            .returning('*')
-    }
+const bcrypt = require('bcryptjs')
+const xss = require('xss')
 
+const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
+
+const UsersService = {
+  hasUserWithUserName(db, username) {
+    return db('jeopardy-generator-capstone-server')
+      .where({ username })
+      .first()
+      .then(user => !!user)
+  },
+  insertUser(db, newUser) {
+    return db
+      .insert(newUser)
+      .into('jeopardy-generator-capstone-server')
+      .returning('*')
+      .then(([user]) => user)
+  },
+  validatePassword(password) {
+    if (password.length < 8) {
+      return 'Password be longer than 8 characters'
+    }
+    if (password.length > 72) {
+      return 'Password be less than 72 characters'
+    }
+    if (password.startsWith(' ') || password.endsWith(' ')) {
+      return 'Password must not start or end with empty spaces'
+    }
+    if (!REGEX_UPPER_LOWER_NUMBER_SPECIAL.test(password)) {
+      return 'Password must contain one upper case, lower case, number and special character'
+    }
+    return null
+  },
+  hashPassword(password) {
+    return bcrypt.hash(password, 12)
+  },
+  serializeUser(user) {
+    return {
+      id: user.id,
+      username: xss(user.username),
+      password: xss(user.password),
+    }
+  },
 }
 
 module.exports = UsersService
