@@ -5,7 +5,7 @@ const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*
 
 const UsersService = {
   hasUserWithUserName(db, username) {
-    return db('jeopardy-generator-capstone-server')
+    return db('users')
       .where({ username })
       .first()
       .then(user => !!user)
@@ -13,7 +13,7 @@ const UsersService = {
   insertUser(db, newUser) {
     return db
       .insert(newUser)
-      .into('jeopardy-generator-capstone-server')
+      .into('users')
       .returning('*')
       .then(([user]) => user)
   },

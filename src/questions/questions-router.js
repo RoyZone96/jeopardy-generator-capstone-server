@@ -101,7 +101,7 @@ questionsRouter
   })
 
 questionsRouter
-  .route('/:questions_id')
+  .route('/')
   .all((req, res, next) => {
     if (isNaN(parseInt(req.params.questions_id))) {
       return res.status(404).json({
