@@ -25,17 +25,21 @@ boardsRouter
       })
       .catch(next)
   })
+
+boardsRouter
+  .route('/')
   .post(jsonParser, (req, res, next) => {
-    const {  user_id,
+    const { user_id,
       board_title,
       times_played,
       date_created,
-      date_updated  } = req.body
-    const newBoards = {  user_id,
+      date_updated } = req.body
+    const newBoards = {
+      user_id,
       board_title,
       times_played,
       date_created,
-      date_updated 
+      date_updated
     }
 
     for (const [key, value] of Object.entries(newBoards))
@@ -67,19 +71,21 @@ boardsRouter
         console.log(numRowsAffected)
         res.status(204).end()
       })
-      .catch(err=>console.log(err))
+      .catch(err => console.log(err))
   })
   .patch(jsonParser, (req, res, next) => {
     const { user_id,
       board_title,
       times_played,
       date_created,
-      date_updated  } = req.body
-    const boardsToUpdate = { user_id,
+      date_updated } = req.body
+    const boardsToUpdate = {
+      user_id,
       board_title,
       times_played,
       date_created,
-      date_updated }
+      date_updated
+    }
 
     const numberOfValues = Object.values(boardsToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
@@ -93,7 +99,8 @@ boardsRouter
       board_title,
       times_played,
       date_created,
-      date_updated})
+      date_updated
+    })
     BoardsService.updateBoards(
       req.app.get('db'),
       req.params.boards_id,
@@ -108,7 +115,7 @@ boardsRouter
 boardsRouter
   .route('/')
   .all((req, res, next) => {
-    if(isNaN(parseInt(req.params.boards_id))) {
+    if (isNaN(parseInt(req.params.boards_id))) {
       return res.status(404).json({
         error: { message: `Invalid id` }
       })
@@ -146,12 +153,14 @@ boardsRouter
       board_title,
       times_played,
       date_created,
-      date_updated  } = req.body
-    const boardsToUpdate = { user_id,
+      date_updated } = req.body
+    const boardsToUpdate = {
+      user_id,
       board_title,
       times_played,
       date_created,
-      date_updated }
+      date_updated
+    }
 
     const numberOfValues = Object.values(boardsToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
