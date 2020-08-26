@@ -25,64 +25,6 @@ boardsRouter
       })
       .catch(next)
   })
-
-boardsRouter
-  .route('/')
-  .all((req, res, next) => {
-    if (isNaN(parseInt(req.params.boards_id))) {
-      return res.status(404).json({
-        error: { message: `Invalid id` }
-      })
-    }
-    BoardsService.getBoardsById(
-      req.app.get('db'),
-      req.params.boards_id
-    )
-      .then(boards => {
-        if (!boards) {
-          return res.status(404).json({
-            error: { message: `boards doesn't exist` }
-          })
-        }
-        res.boards = boards
-        next()
-      })
-      .catch(next)
-  })
-  .get((req, res, next) => {
-    res.json(serializeBoards(res.boards))
-  })
-  .post(jsonParser, (req, res, next) => {
-    const { user_id,
-      board_title,
-      times_played
-    } = req.body
-    console.log(req.body)
-    const newBoards = {
-      user_id,
-      board_title,
-      times_played
-    }
-
-    for (const [key, value] of Object.entries(newBoards))
-      if (value == null)
-        return res.status(400).json({
-          error: { message: `Missing '${key}' in request body` }
-        })
-
-
-    BoardsService.insertBoards(
-      req.app.get('db'),
-      newBoards
-    )
-      .then(boards => {
-        res
-          .status(201)
-          .location(path.posix.join(req.originalUrl, `/${boards.id}`))
-          .json(serializeBoards(boards))
-      })
-      .catch(next)
-  })
   .delete((req, res, next) => {
     console.log(req.params)
     BoardsService.deleteBoards(
@@ -133,6 +75,65 @@ boardsRouter
       })
       .catch(err => console.log(err))
   })
+
+boardsRouter
+  .route('/')
+  .all((req, res, next) => {
+    if (isNaN(parseInt(req.params.boards_id))) {
+      return res.status(404).json({
+        error: { message: `Invalid id` }
+      })
+    }
+    BoardsService.getBoards(
+      req.app.get('db'),
+      req.params.boards_id
+    )
+      .then(boards => {
+        if (!boards) {
+          return res.status(404).json({
+            error: { message: `boards doesn't exist` }
+          })
+        }
+        res.boards = boards
+        next()
+      })
+      .catch(next)
+  })
+  .get((req, res, next) => {
+    res.json(serializeBoards(res.boards))
+  })
+  .post(jsonParser, (req, res, next) => {
+    const { user_id,
+      board_title,
+      times_played
+    } = req.body
+    console.log(req.body)
+    const newBoards = {
+      user_id,
+      board_title,
+      times_played
+    }
+
+    for (const [key, value] of Object.entries(newBoards))
+      if (value == null)
+        return res.status(400).json({
+          error: { message: `Missing '${key}' in request body` }
+        })
+
+
+    BoardsService.insertBoards(
+      req.app.get('db'),
+      newBoards
+    )
+      .then(boards => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `/${boards.id}`))
+          .json(serializeBoards(boards))
+      })
+      .catch(next)
+  })
+  
 
 
 
