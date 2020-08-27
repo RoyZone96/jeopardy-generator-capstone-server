@@ -82,6 +82,13 @@ boardsRouter
 boardsRouter
   .route('/:boards_id')
   .all((req, res, next) => {
+   if (isNaN(parseInt(req.params.boards_id))) {
+    return res.status(404).json({
+      error: {
+          message: `Invalid id`
+      }
+  })
+} 
     BoardsService.getBoardsById(
       req.app.get('db'),
       req.params.boards_id
@@ -97,11 +104,14 @@ boardsRouter
       })
       .catch(next)
   })
+  .get((req, res, next) => {
+    res.json(serializeBoards(res.board))
+  })
   .delete((req, res, next) => {
+    req.params.board_id,
     console.log(req.params)
     BoardsService.deleteBoards(
       req.app.get('db'),
-      req.params.board_id
     )
       .then(numRowsAffected => {
         console.log(numRowsAffected)
@@ -145,7 +155,7 @@ boardsRouter
       .then(updatedboards => {
         res.status(200).json(serializeBoards(updatedboards[0]))
       })
-      .catch(err => console.log(err))
+      .catch(error => console.log(error))
   })
 
 

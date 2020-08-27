@@ -22,7 +22,7 @@ const BoardsService = {
     },
     deleteBoards(db, boards_id) {
         return db('boards')
-            .where({ 'id': boards_id })
+            .where({'id': boards_id})
             .delete()
     },
     updateBoards(db, boards_id, newBoards) {
@@ -31,7 +31,6 @@ const BoardsService = {
             .update(newBoards, returning = true)
             .returning('*')
     }
-
 }
 
 module.exports = BoardsService
