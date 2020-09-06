@@ -12,7 +12,13 @@ const serializeBoards = boards => ({
   board_title: xss(boards.title),
   times_played: boards.times_played,
   date_created: boards.date_created,
-  date_updated: boards.date_updated
+  date_updated: boards.date_updated,
+  category_one: xss(boards.category_one),
+  category_two: xss(boards.category_two),
+  category_three: xss(boards.category_three),
+  category_four: xss(boards.category_four),
+  category_five: xss(boards.category_five),
+  category_six: xss(boards.category_six)
 })
 
 boardsRouter
@@ -29,22 +35,31 @@ boardsRouter
   .post(jsonParser, (req, res, next) => {
     const { user_id,
       board_title,
-      times_played
+      times_played,
+      category_one,
+      category_two,
+      category_three,
+      category_four,
+      category_five,
+      category_six
     } = req.body
     console.log(req.body)
     const newBoards = {
       user_id,
       board_title,
-      times_played
+      times_played,
+      category_one,
+      category_two,
+      category_three,
+      category_four,
+      category_five,
+      category_six
     }
-
     for (const [key, value] of Object.entries(newBoards))
       if (value == null)
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
         })
-
-
     BoardsService.insertBoards(
       req.app.get('db'),
       newBoards
@@ -109,10 +124,8 @@ boardsRouter
   })
   .delete((req, res, next) => {
     req.params.board_id,
-    console.log(req.params)
-    BoardsService.deleteBoards(
-      req.app.get('db'),
-    )
+    console.log(typeof req.params.boards_id)
+    BoardsService.deleteBoards(req.app.get('db'), req.params.boards_id)
       .then(numRowsAffected => {
         console.log(numRowsAffected)
         res.status(204).end()
@@ -120,16 +133,14 @@ boardsRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { user_id,
+    const { 
       board_title,
       times_played,
-      date_created,
-      date_updated } = req.body
+      date_updated
+      } = req.body
     const boardsToUpdate = {
-      user_id,
       board_title,
       times_played,
-      date_created,
       date_updated
     }
 
