@@ -11,6 +11,12 @@ const QuestionsService = {
             .where('questions.id', questions_id)
             .first()
     },
+    getQuestionsByBoardId(db, board_id ){
+        return db
+            .from('questions')
+            .select("*")
+            .where('questions.board_id', board_id)
+    },
     insertQuestions(db, newQuestions) {
         return db
             .insert(newQuestions)

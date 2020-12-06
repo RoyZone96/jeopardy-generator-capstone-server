@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS questions(
     question_text TEXT NOT NULL,
     question_answer TEXT NOT NULL,
     question_points INTEGER NOT NULL,
-    question_category TEXT NOT NULL
+    question_category INTEGER NOT NULL
 );

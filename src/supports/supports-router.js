@@ -11,12 +11,11 @@ const serializeSupports = supports => ({
     user_id: supports.user_id,
     email: xss(supports.email),
     subject: xss(supports.subject),
-    content: xss(supports.content),
-    date_added: supports.date_added
+    content: xss(supports.content)
 })
 
 supportsRouter
-    .route('/:supports_id')
+    .route('/')
     .get((req, res, next) => {
         const knexInstance = req.app.get('db')
         SupportsService.getSupports(knexInstance)
@@ -26,25 +25,21 @@ supportsRouter
             .catch(next)
     })
     .post(jsonParser, (req, res, next) => {
-        const { user_id,
+        const { 
             email,
             subject,
-            content,
-            date_added } = req.body
+            content
+         } = req.body
         const newSupports = {
-            user_id,
             email,
             subject,
-            content,
-            date_added
+            content
         }
-
         for (const [key, value] of Object.entries(newSupports))
             if (value == null)
                 return res.status(400).json({
                     error: { message: `Missing '${key}' in request body` }
                 })
-
 
         SupportsService.insertSupports(
             req.app.get('db'),
@@ -58,59 +53,10 @@ supportsRouter
             })
             .catch(next)
     })
-    .delete((req, res, next) => {
-        console.log(req.params)
-        SupportsService.deleteSupports(
-            req.app.get('db'),
-            req.params.supports_id
-        )
-            .then(numRowsAffected => {
-                console.log(numRowsAffected)
-                res.status(204).end()
-            })
-            .catch(err => console.log(err))
-    })
-    .patch(jsonParser, (req, res, next) => {
-        const { user_id,
-            email,
-            subject,
-            content,
-            date_added } = req.body
-        const supportsToUpdate = {
-            user_id,
-            email,
-            subject,
-            content,
-            date_added
-        }
 
-        const numberOfValues = Object.values(supportsToUpdate).filter(Boolean).length
-        if (numberOfValues === 0)
-            return res.status(400).json({
-                error: {
-                    message: `Request body must content either 'title' or 'completed'`
-                }
-            })
-        console.log({
-            user_id,
-            email,
-            subject,
-            content,
-            date_added
-        })
-        SupportsService.updateSupports(
-            req.app.get('db'),
-            req.params.supports_id,
-            supportsToUpdate
-        )
-            .then(updatedSupports => {
-                res.status(200).json(serializeSupports(updatedSupports[0]))
-            })
-            .catch(err => console.log(err))
-    })
 
 supportsRouter
-    .route('/')
+    .route('/:supports_id')
     .all((req, res, next) => {
         if (isNaN(parseInt(req.params.supports_id))) {
             return res.status(404).json({
@@ -136,46 +82,51 @@ supportsRouter
         res.json(serializeSupports(res.supports))
     })
     .delete((req, res, next) => {
+        console.log(req.params)
         SupportsService.deleteSupports(
             req.app.get('db'),
-            req.params.id
+            req.params.supports_id
         )
             .then(numRowsAffected => {
+                console.log(numRowsAffected)
                 res.status(204).end()
             })
-            .catch(next)
+            .catch(err => console.log(err))
     })
-    .patch(jsonParser, (req, res, next) => {
-        const { user_id,
-            email,
-            subject,
-            content,
-            date_added } = req.body
-        const supportsToUpdate = {
-            user_id,
-            email,
-            subject,
-            content,
-            date_added
-        }
+.patch(jsonParser, (req, res, next) => {
+    const { 
+        email,
+        subject,
+        content,
+         } = req.body
+    const supportsToUpdate = {
+        email,
+        subject,
+        content
+    }
 
-        const numberOfValues = Object.values(supportsToUpdate).filter(Boolean).length
-        if (numberOfValues === 0)
-            return res.status(400).json({
-                error: {
-                    message: `Request body must content either 'title' or 'completed'`
-                }
-            })
-
-        SupportsService.updatesupports(
-            req.app.get('db'),
-            req.params.supports_id,
-            supportsToUpdate
-        )
-            .then(updatedsupports => {
-                res.status(200).json(serializeSupports(updatedsupports[0]))
-            })
-            .catch(next)
+    const numberOfValues = Object.values(supportsToUpdate).filter(Boolean).length
+    if (numberOfValues === 0)
+        return res.status(400).json({
+            error: {
+                message: `Request body must content either 'title' or 'completed'`
+            }
+        })
+    console.log({
+        user_id,
+        email,
+        subject,
+        content
     })
+    SupportsService.updateSupports(
+        req.app.get('db'),
+        req.params.supports_id,
+        supportsToUpdate
+    )
+        .then(updatedSupports => {
+            res.status(200).json(serializeSupports(updatedSupports[0]))
+        })
+        .catch(err => console.log(err))
+})
 
 module.exports = supportsRouter
