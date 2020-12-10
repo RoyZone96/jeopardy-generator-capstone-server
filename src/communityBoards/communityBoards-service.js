@@ -1,33 +1,33 @@
 const CommunityBoardsService = {
     getCommunityBoards(db) {
         return db
-            .from('boards')
+            .from('communityBoards')
             .select("*")
     },
-    getCommunityBoardsById(db, boards_id ){
+    getCommunityBoardsById(db, communityBoards_id ){
         return db
-            .from('boards')
+            .from('communityBoards')
             .select("*")
-            .where('boards.id', boards_id)
+            .where('communityBoards.id', communityBoards_id)
             .first()
     },
     insertCommunityBoards(db, newCommunityBoards) {
         return db
             .insert(newCommunityBoards)
-            .into('boards')
+            .into('communityBoards')
             .returning('*')
             .then(rows => {
                 return rows[0]
             })
     },
-    deleteCommunityBoards(db, boards_id) {
-        return db('boards')
-            .where({'id': boards_id})
+    deleteCommunityBoards(db, communityBoards_id) {
+        return db('communityBoards')
+            .where({'id': communityBoards_id})
             .delete()
     },
-    updateCommunityBoards(db, boards_id, newCommunityBoards) {
-        return db('boards')
-            .where({ id: boards_id })
+    updateCommunityBoards(db, communityBoards_id, newCommunityBoards) {
+        return db('communityBoards')
+            .where({ id: communityBoards_id })
             .update(newCommunityBoards, returning = true)
             .returning('*')
     }

@@ -44,10 +44,15 @@ boardsRouter
       category_six
     } = req.body
     console.log(req.body)
+    //get the current date in unix format 
+    const timeElapsed = Date.now();
+    //conver the unix format date into string
+    const today = new Date(timeElapsed);
     const newBoards = {
       user_id,
       board_title,
       times_played,
+      date_created: today.toISOString(),
       category_one,
       category_two,
       category_three,
@@ -97,13 +102,13 @@ boardsRouter
 boardsRouter
   .route('/:boards_id')
   .all((req, res, next) => {
-   if (isNaN(parseInt(req.params.boards_id))) {
-    return res.status(404).json({
-      error: {
+    if (isNaN(parseInt(req.params.boards_id))) {
+      return res.status(404).json({
+        error: {
           message: `Invalid id`
-      }
-  })
-} 
+        }
+      })
+    }
     BoardsService.getBoardsById(
       req.app.get('db'),
       req.params.boards_id
@@ -120,11 +125,11 @@ boardsRouter
       .catch(next)
   })
   .get((req, res, next) => {
-    res.json(serializeBoards(res.board))
+    res.json(res.board)
   })
   .delete((req, res, next) => {
     req.params.board_id,
-    console.log(typeof req.params.boards_id)
+      console.log(typeof req.params.boards_id)
     BoardsService.deleteBoards(req.app.get('db'), req.params.boards_id)
       .then(numRowsAffected => {
         console.log(numRowsAffected)
@@ -133,15 +138,19 @@ boardsRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { 
+    const {
       board_title,
       times_played,
       date_updated
-      } = req.body
+    } = req.body
+    //get the current date in unix format 
+    const timeElapsed = Date.now();
+    //conver the unix format date into string
+    const today = new Date(timeElapsed);
     const boardsToUpdate = {
       board_title,
       times_played,
-      date_updated
+      date_updated: today.toISOString()
     }
 
     const numberOfValues = Object.values(boardsToUpdate).filter(Boolean).length
