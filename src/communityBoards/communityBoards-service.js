@@ -3,6 +3,10 @@ const CommunityBoardsService = {
         return db
             .from('communityBoards')
             .select("*")
+            .orderBy('communityBoards.id', 'asc')
+            .orderBy('communityBoards.board_title', 'asc')
+            .orderBy('communityBoards.date_created', 'desc')
+            .orderBy('communityBoards.likes', 'asc')
     },
     getCommunityBoardsById(db, communityBoards_id ){
         return db

@@ -27,17 +27,22 @@ questionsRouter
   })
   .post(jsonParser, (req, res, next) => {
     const { 
+      board_id,
       question_text,
       question_answer,
       question_category,
       question_points
     } = req.body
     const newQuestion = {
+      board_id,
       question_text,
       question_answer,
       question_category,
       question_points
     }
+
+    console.log(newQuestion, "newQuestion")
+    
     for (const [key, value] of Object.entries(newQuestion))
       if (value == null)
         return res.status(400).json({
@@ -95,14 +100,20 @@ questionsRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { question_text,
+    const { 
+      board_id,
+      question_text,
       question_answer,
       question_category,
       question_points } = req.body
-    const questionsToUpdate = { question_text,
+    const questionsToUpdate = { 
+      board_id,
+      question_text,
       question_answer,
       question_category,
       question_points }
+
+      console.log(questionsToUpdate, "questionsToUpdate")
 
     const numberOfValues = Object.values(questionsToUpdate).filter(Boolean).length
     if (numberOfValues === 0)

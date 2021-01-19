@@ -108,7 +108,7 @@ communityBoardsRouter
                 }
             })
         }
-        CommunityBoardsService.getCommunityBoardsById(
+        communityBoardsService.getCommunityBoardsById(
             req.app.get('db'),
             req.params.communityBoards_id
         )
@@ -127,7 +127,7 @@ communityBoardsRouter
         res.json(serializeCommunityBoards(res.board))
     })
     .delete((req, res, next) => {
-        req.params.board_id,
+        req.params.communityBoards_id,
             console.log(typeof req.params.communityBoards_id)
         communityBoardsService.deleteCommunityBoards(req.app.get('db'), req.params.communityBoards_id)
             .then(numRowsAffected => {

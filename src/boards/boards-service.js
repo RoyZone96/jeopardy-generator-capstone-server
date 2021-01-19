@@ -3,6 +3,9 @@ const BoardsService = {
         return db
             .from('boards')
             .select("*")
+            .orderBy('boards.id', 'asc')
+            .orderBy('boards.board_title', 'asc')
+            .orderBy('boards.date_created', 'desc')
     },
     getBoardsById(db, boards_id ){
         return db

@@ -16,6 +16,8 @@ const QuestionsService = {
             .from('questions')
             .select("*")
             .where('questions.board_id', board_id)
+            .orderBy('questions.question_points', 'asc')
+            .orderBy('questions.question_category', 'asc')
     },
     insertQuestions(db, newQuestions) {
         return db
