@@ -9,7 +9,7 @@ const jsonParser = express.json()
 const serializeCommunityBoards = communityBoards => ({
     id: communityBoards.id,
     user_id: communityBoards.user_id,
-    board_title: xss(communityBoards.title),
+    board_title: xss(communityBoards.board_title),
     likes: communityBoards.likes,
     date_created: communityBoards.date_created,
     category_one: xss(communityBoards.category_one),
@@ -76,13 +76,17 @@ communityBoardsRouter
             })
             .catch(next)
     })
+    
+
+communityBoardsRouter
+    .route('/:communityBoards_id')
     .all((req, res, next) => {
         if (isNaN(parseInt(req.params.communityBoards_id))) {
             return res.status(404).json({
                 error: { message: `Invalid id` }
             })
         }
-        communityBoardsService.getCommunityBoards(
+        communityBoardsService. getCommunityBoardsById(
             req.app.get('db'),
             req.params.communityBoards_id
         )
@@ -97,34 +101,8 @@ communityBoardsRouter
             })
             .catch(next)
     })
-
-communityBoardsRouter
-    .route('/:communityBoards_id')
-    .all((req, res, next) => {
-        if (isNaN(parseInt(req.params.communityBoards_id))) {
-            return res.status(404).json({
-                error: {
-                    message: `Invalid id`
-                }
-            })
-        }
-        communityBoardsService.getCommunityBoardsById(
-            req.app.get('db'),
-            req.params.communityBoards_id
-        )
-            .then(board => {
-                if (!board) {
-                    return res.status(404).json({
-                        error: { message: `board doesn't exist` }
-                    })
-                }
-                res.board = board
-                next()
-            })
-            .catch(next)
-    })
     .get((req, res, next) => {
-        res.json(serializeCommunityBoards(res.board))
+        res.json(serializeCommunityBoards(res.communityBoards))
     })
     .delete((req, res, next) => {
         req.params.communityBoards_id,
@@ -138,14 +116,10 @@ communityBoardsRouter
     })
     .patch(jsonParser, (req, res, next) => {
         const {
-            board_title,
-            times_played,
-            date_updated
+           likes
         } = req.body
         const communityBoardsToUpdate = {
-            board_title,
-            times_played,
-            date_updated
+            likes
         }
 
         const numberOfValues = Object.values(communityBoardsToUpdate).filter(Boolean).length
@@ -155,14 +129,7 @@ communityBoardsRouter
                     message: `Request body must content either 'title' or 'completed'`
                 }
             })
-        console.log({
-            user_id,
-            board_title,
-            times_played,
-            date_created,
-            date_updated
-        })
-        CommunityBoardsService.updateCommunityBoards(
+        communityBoardsService.updateCommunityBoards(
             req.app.get('db'),
             req.params.communityBoards_id,
             communityBoardsToUpdate
