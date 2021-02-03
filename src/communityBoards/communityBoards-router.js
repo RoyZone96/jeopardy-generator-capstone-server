@@ -121,14 +121,6 @@ communityBoardsRouter
         const communityBoardsToUpdate = {
             likes
         }
-
-        const numberOfValues = Object.values(communityBoardsToUpdate).filter(Boolean).length
-        if (numberOfValues === 0)
-            return res.status(400).json({
-                error: {
-                    message: `Request body must content either 'title' or 'completed'`
-                }
-            })
         communityBoardsService.updateCommunityBoards(
             req.app.get('db'),
             req.params.communityBoards_id,
