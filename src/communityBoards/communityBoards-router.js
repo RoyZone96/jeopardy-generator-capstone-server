@@ -32,7 +32,9 @@ communityBoardsRouter
             .catch(next)
     })
     .post(jsonParser, (req, res, next) => {
-        const { user_id,
+        const { 
+            id,
+            user_id,
             board_title,
             likes,
             category_one,
@@ -48,6 +50,7 @@ communityBoardsRouter
         //conver the unix format date into string
         const today = new Date(timeElapsed);
         const newCommunityBoards = {
+            id,
             user_id,
             board_title,
             likes,
