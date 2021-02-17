@@ -87,7 +87,7 @@ The app's functionality includes:
 ## Front-end Structure - React Components Map
 * __Index.js__ (stateless)
     * __App.js__ (stateful)
-        * __LandingPage.js__ (stateful) - gets the _"prop name"_ and the _"callback prop name"_ from the __App.js__
+        * __LandingPage.js__ (stateful) - 
             * __LoginForm.js__ (stateful) -
             * __RegistrationForm.js__ (stateful) -
         * __Navbar.js__ (stateless) -
@@ -96,8 +96,8 @@ The app's functionality includes:
             * __BoardList.js__(stateless)
                 * __Board.js__(stateless)
                 * __BoardNav.js__(stateless)
-            * __PlayBoard.js__(stateful)
-                *__PlayQuestion.js
+            * __PlayBoard.js__(stateful) 
+                * __PlayQuestion.js (stateful)
             * __CommunityBoards.js__(statless) -
                 * __BoardList.js__(stateless)
                     * __Board.js__(stateless)
@@ -106,7 +106,7 @@ The app's functionality includes:
                 * __SupportForm.js__(stateful)
 
 
-## Back-end Structure - Business Objects???
+## Back-end Structure - Business Objects
 * Users (database table)
     * id (auto-generated)
     * email (email validation)
@@ -153,6 +153,7 @@ The app's functionality includes:
 
 ## API Documentation
 API Documentation details:
+```text
     /api
     .
     ├── /auth
@@ -169,6 +170,7 @@ API Documentation details:
     |       └──/questions
     |__/Support
         └──POST
+```        
 ## Responsive
 App is built to be usable on mobile devices, as well as responsive across mobile, tablet, laptop, and desktop screen resolutions.
 
