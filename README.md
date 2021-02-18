@@ -63,12 +63,24 @@ Main Page/Question Shown
 Support Page
 ![Support Page](/github-images/wireframes/support-page.png)
 
-## Screenshots???
+## Screenshots
 Landing/Login Page
 :-------------------------:
-![Landing Page](/github-images/screenshots/login-page-screenshot.png)
+![Landing Page](/github-images/Screenshots/landing.png)
 Landing/Register Page
-![Register Page](/github-images/screenshots/login-page-screenshot.png)
+![Register Page](/github-images/Screenshots/registration.png)
+
+Main Page/Home
+:-------------------------:
+![Home Page](/github-images/Screenshots/Homepage.png)
+
+Boards
+:-------------------------:
+![Boards/Editing](/github-images/Screenshots/editing.png)
+
+![Boards/Game](/github-images/Screenshots/Play.png)
+
+![Boards/Game/Question](/github-images/Screenshots/QuestionPage.png)
 
 ## Functionality
 The app's functionality includes:
