@@ -2,7 +2,7 @@
 Whether for exam review or for pure entertainment, generate and share full functioning Jeopardy boards for all to enjoy.
 
 ## Working Prototype
-You can access a working prototype of the React app here:https://jeopardy-generator.vercel.app/ and Node app here: https://guarded-woodland-98056.herokuapp.com/
+You can access a working prototype of the React app here:https://jeopardy-generator.vercel.app/ and Node app here: https://jeapordy-generator-capstone.herokuapp.com/
 
 ## User Stories
 This app is for two types of users: a visitor and a logged-in user

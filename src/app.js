@@ -26,7 +26,7 @@ app.use(morgan(morganOption, {
 }))
 app.use(cors(
   ({
-    origin: CLIENT_ORIGIN
+    // origin: CLIENT_ORIGIN
   })
 ))
 app.use(helmet())
