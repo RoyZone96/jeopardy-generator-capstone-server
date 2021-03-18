@@ -40,6 +40,10 @@ app.use('/api/questions', questionsRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/communityBoards', communityBoardsRouter)
 
+app.get('/', (req, res) => {
+  res.send('Hello, world!')
+  })
+
 app.use(errorHandler)
 
 module.exports = app
