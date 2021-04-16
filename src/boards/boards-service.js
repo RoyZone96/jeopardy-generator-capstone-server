@@ -3,11 +3,20 @@ const BoardsService = {
         return db
             .from('boards')
             .select("*")
-            .orderBy('boards.id', 'asc')
+    },
+    getSortedBoardsByNames(db) {
+        return db
+            .from('boards')
+            .select("*")
             .orderBy('boards.board_title', 'asc')
+    },
+    getSortedBoardsByDate(db) {
+        return db
+            .from('boards')
+            .select("*")
             .orderBy('boards.date_created', 'desc')
     },
-    getBoardsById(db, boards_id ){
+    getBoardsById(db, boards_id) {
         return db
             .from('boards')
             .select("*")
@@ -25,7 +34,7 @@ const BoardsService = {
     },
     deleteBoards(db, boards_id) {
         return db('boards')
-            .where({'id': boards_id})
+            .where({ 'id': boards_id })
             .delete()
     },
     updateBoards(db, boards_id, newBoards) {

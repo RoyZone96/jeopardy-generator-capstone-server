@@ -79,6 +79,42 @@ communityBoardsRouter
             })
             .catch(next)
     })
+
+    communityBoardsRouter
+    .route('/sort-by/names')
+    .get((req, res, next) => {
+        communityBoardsService.getSortedCommunityBoardsByNames(
+            req.app.get('db')
+        )
+            .then(communityBoards => {
+                res.json(communityBoards)
+            })
+            .catch(next)
+    })
+
+    communityBoardsRouter
+    .route('/sort-by/dates')
+    .get((req, res, next) => {
+        communityBoardsService.getSortedCommunityBoardsByDates(
+            req.app.get('db')
+        )
+            .then(communityBoards => {
+                res.json(communityBoards)
+            })
+            .catch(next)
+    })
+
+    communityBoardsRouter
+    .route('/sort-by/popular')
+    .get((req, res, next) => {
+        communityBoardsService.getSortedCommunityBoardsByLikes(
+            req.app.get('db')
+        )
+            .then(communityBoards => {
+                res.json(communityBoards)
+            })
+            .catch(next)
+    })
     
 
 communityBoardsRouter

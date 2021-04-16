@@ -99,6 +99,30 @@ boardsRouter
       .catch(next)
   })
 
+  boardsRouter
+  .route('/sort-by/names')
+  .get((req, res, next) => {
+    BoardsService.getSortedBoardsByNames(
+      req.app.get('db')
+    )
+      .then(boards => {
+        res.json(boards)
+      })
+      .catch(next)
+  })
+  
+  boardsRouter
+  .route('/sort-by/dates')
+  .get((req, res, next) => {
+    BoardsService. getSortedBoardsByDate(
+      req.app.get('db')
+    )
+      .then(boards => {
+        res.json(boards)
+      })
+      .catch(next)
+  })
+
 boardsRouter
   .route('/:boards_id')
   .all((req, res, next) => {
@@ -177,7 +201,6 @@ boardsRouter
       })
       .catch(error => console.log(error))
   })
-
 
 
 module.exports = boardsRouter

@@ -4,11 +4,26 @@ const CommunityBoardsService = {
             .from('communityBoards')
             .select("*")
             .orderBy('communityBoards.id', 'asc')
-            .orderBy('communityBoards.board_title', 'asc')
-            .orderBy('communityBoards.date_created', 'desc')
-            .orderBy('communityBoards.likes', 'asc')
     },
-    getCommunityBoardsById(db, communityBoards_id ){
+    getSortedCommunityBoardsByNames(db) {
+        return db
+            .from('communityBoards')
+            .select("*")
+            .orderBy('communityBoards.board_title', 'asc')
+    },
+    getSortedCommunityBoardsByDates(db) {
+        return db
+            .from('communityBoards')
+            .select("*")
+            .orderBy('communityBoards.date_created', 'desc')
+    },
+    getSortedCommunityBoardsByLikes(db) {
+        return db
+            .from('communityBoards')
+            .select("*")
+            .orderBy('communityBoards.likes', 'desc')
+    },
+    getCommunityBoardsById(db, communityBoards_id) {
         return db
             .from('communityBoards')
             .select("*")
@@ -26,7 +41,7 @@ const CommunityBoardsService = {
     },
     deleteCommunityBoards(db, communityBoards_id) {
         return db('communityBoards')
-            .where({'id': communityBoards_id})
+            .where({ 'id': communityBoards_id })
             .delete()
     },
     updateCommunityBoards(db, communityBoards_id, newCommunityBoards) {
