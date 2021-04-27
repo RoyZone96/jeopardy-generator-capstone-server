@@ -161,7 +161,7 @@ boardsRouter
       })
       .catch(next)
   })
-  .patch(jsonParser, (req, res, next) => {
+  .patch(jsonParser, (res, next) => {
     const {
       board_title,
       category_one,
@@ -171,7 +171,7 @@ boardsRouter
       category_five,
       category_six,
       date_updated
-    } = req.body
+    } = body
     //get the current date in unix format 
     const timeElapsed = Date.now();
     //conver the unix format date into string
@@ -194,13 +194,6 @@ boardsRouter
           message: `Request body must content either 'title' or 'completed'`
         }
       })
-    console.log({
-      user_id,
-      board_title,
-      times_played,
-      date_created,
-      date_updated
-    })
     BoardsService.updateBoards(
       req.app.get('db'),
       req.params.boards_id,
