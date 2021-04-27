@@ -164,7 +164,12 @@ boardsRouter
   .patch(jsonParser, (req, res, next) => {
     const {
       board_title,
-      times_played,
+      category_one,
+      category_two,
+      category_three,
+      category_four,
+      category_five,
+      category_six,
       date_updated
     } = req.body
     //get the current date in unix format 
@@ -173,7 +178,12 @@ boardsRouter
     const today = new Date(timeElapsed);
     const boardsToUpdate = {
       board_title,
-      times_played,
+      category_one,
+      category_two,
+      category_three,
+      category_four,
+      category_five,
+      category_six,
       date_updated: today.toISOString()
     }
 
